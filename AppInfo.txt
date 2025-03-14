@@ -1,0 +1,62 @@
+The project will not start correctly without installing the appropriate libraries.
+To do this, use the library management tool - CocoaPods (some of the libraries used do not support Swift Package Manager).
+To install this tool on macOS, follow these steps:
+In the terminal, type:
+sudo gem install cocoapods
+To add libraries to the project, provide the file path:
+cd /path/to/project
+Then initialize CocoaPods by creating the Podfile file:
+pod init
+Opening the pod file:
+Open podfile
+In the file, type:
+platform : ios, '16.0'
+
+target 'iChat' to
+use_frameworks!
+
+# Pods for iChat
+ under 'Firebase/Core'
+ under 'Firebase/Auth'
+ under 'Firebase/Firestore'
+ under 'Firebase/Storage'
+ under 'Firebase/Analytics'
+ under 'Firebase/Messaging'
+ under 'FirebaseFirestoreSwift'
+
+ under 'Gallery'
+ under 'RealmSwift'
+
+ under 'ProgressHUD', '13.8.6'
+ under 'SKPhotoBrowser'
+ under 'BoringSSL-GRPC'
+
+ under 'MessageKit'
+ under 'InputBarAccessoryView'
+ under 'YPImagePicker'
+under 'SwiftProtobuf'
+under 'LibSignalProtocolSwift', '~> 1.3'
+
+
+
+end
+
+#Delete problematic flag with BoringSSL-GRPC
+post_install to |installer|
+ installer.pods_project.targets.each to |target|
+ if target.name == 'BoringSSL-GRPC'
+ target.source_build_phase.files.each to |file|
+ if file.settings && file.settings['COMPILER_FLAGS']
+ flags = file.settings['COMPILER_FLAGS'].split
+ flags.reject! { |flag| flag == '-GCC_WARN_INHIBIT_ALL_WARNINGS' }
+file.settings['COMPILER_FLAGS'] = flags.join(' ')
+end
+end
+end
+end
+end
+
+Save the file and call the library installer in the terminal:
+pod install
+
+If you get an error with the library in xcode during build, set the minimum deployments to IOS 16.0
